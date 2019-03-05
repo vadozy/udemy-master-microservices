@@ -24,6 +24,7 @@ public class SwaggerConfig {
 			"www.man.com", 
 			"vadim.storozhuk@man.com");
 	
+	@SuppressWarnings("rawtypes")
 	private static final ApiInfo DEFAULT_API_INFO = new ApiInfo(
 			"Awesome API Title", 
 			"Awesome API Description", 
