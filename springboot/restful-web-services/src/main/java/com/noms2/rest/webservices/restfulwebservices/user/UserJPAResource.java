@@ -25,6 +25,8 @@ public class UserJPAResource {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private PostRepository postRepository;
 	
 	@GetMapping("/jpa/users")
 	public List<User> retrieveAllUsers() {
@@ -65,4 +67,39 @@ public class UserJPAResource {
 	public void deleteUser(@PathVariable int id) {
 		userRepository.deleteById(id);
 	}
+	
+	@GetMapping("/jpa/users/{id}/posts")
+	public List<Post> retrieveAllPostsForUser(@PathVariable int id) {
+		Optional<User> u = userRepository.findById(id);
+		
+		if (!u.isPresent()) {
+			throw new UserNotFoundException("id-" + id);
+		}
+				
+		return u.get().getPosts();
+	}
+	
+	@PostMapping("/jpa/users/{id}/posts")
+	public ResponseEntity<Object> createPostForUser(@PathVariable int id, @RequestBody Post post) {
+		
+		Optional<User> u = userRepository.findById(id);
+		
+		if (!u.isPresent()) {
+			throw new UserNotFoundException("id-" + id);
+		}
+		
+		User user = u.get();
+		post.setUser(user);
+				
+		Post savedPost = postRepository.save(post);
+		
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(savedPost.getId())
+				.toUri();
+			
+		return ResponseEntity.created(location).build();
+	}
+
 }
