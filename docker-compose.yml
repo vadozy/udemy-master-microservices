@@ -1,0 +1,24 @@
+version: '3'
+
+# START
+# docker-compose up -d
+#
+# SHUTDOWN
+# docker-compose down
+# http://localhost:15672 login as guest/guest
+# http://localhost:9411 or http://localhost:9411/zipkin/
+
+services:
+  rabbit-mq:
+    hostname: rabbit-mq
+    image: rabbitmq:3.7.13-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - '9411:9411'
+#    environment:
+#      - RABBIT_URI=amqp://rabbit-mq
+
